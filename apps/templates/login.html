@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="../static/favicon.ico" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="h-screen bg-amber-50">
+    <a
+      href="/"
+      class="flex items-center ml-10 mt-10 text-black font-semibold hover:text-gray-500"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-10 h-6 mr-2"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+      Dashboard
+    </a>
+    <div class="flex items-center justify-center h-screen bg-amber-50">
+      <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+        <h2 class="text-xl font-bold text-center">Welcome Back!</h2>
+        <p class="text-center text-gray-600 mb-6">
+          Masukkan email dan password Anda
+        </p>
+        <form id="loginform">
+          <div class="mb-4">
+            <label class="block text-gray-700 font-medium mb-1">Email</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Masukkan Email"
+              class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-amber-300"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 font-medium mb-1">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Masukkan Password"
+              class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-amber-300"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full py-2 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600"
+          >
+            LOGIN
+          </button>
+          <div class="text-black mt-2 hover:text-gray-600">
+            <a href="/register">Belum Memiliki Akun? Daftar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document
+      .getElementById("loginform")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        Swal.fire({
+          title: "Memproses...",
+          text: "Mohon tunggu sebentar",
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          willOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        fetch("http://localhost:3000/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+          credentials: "include",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message === "Login berhasil") {
+              Swal.fire({
+                title: "Berhasil!",
+                text: "Login sukses, Anda akan diarahkan Ke Halaman Egg Class.",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false,
+              });
+
+              setTimeout(() => {
+                window.location.href = "/egg-class";
+              }, 2000);
+            } else {
+              Swal.fire({
+                title: "Gagal!",
+                text: data.error || "Terjadi kesalahan",
+                icon: "error",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            Swal.fire({
+              title: "Error!",
+              text: "Terjadi kesalahan jaringan",
+              icon: "error",
+            });
+          });
+      });
+  </script>
+</html>

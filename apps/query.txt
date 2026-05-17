@@ -1,0 +1,9 @@
+CREATE TABLE klasifikasi_citra (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    citra VARCHAR(255) NOT NULL,
+    tanggal TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    Warna VARCHAR(255) NOT NULL,
+    Kebersihan VARCHAR(255) NOT NULL,
+    hasil_klasifikasi VARCHAR(255) NOT NULL
+);
+

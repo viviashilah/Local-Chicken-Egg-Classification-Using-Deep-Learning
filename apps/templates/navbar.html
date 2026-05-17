@@ -1,0 +1,105 @@
+<!-- templates/partials/navbar.html -->
+<div class="collapse navbar-collapse" id="navbarSupportedContent1">
+  <ul class="navbar-nav ms-auto my-2 my-md-0 fs-5">
+    <li class="nav-item ms-lg-4 fw-bold">
+      <a class="nav-link" href="/">Dashboard</a>
+    </li>
+    <li class="nav-item ms-lg-4 fw-bold">
+      <a class="nav-link" href="/egg-class">Egg Classification</a>
+    </li>
+    <li
+      class="nav-item ms-lg-4 fw-bold"
+      id="history-report"
+      style="display: none"
+    >
+      <a class="nav-link" href="/history-report">History Reports</a>
+    </li>
+    <li class="nav-item ms-lg-4 fw-bold" id="data-user" style="display: none">
+      <a class="nav-link" href="/data-user">Data User</a>
+    </li>
+    <li class="nav-item ms-lg-4 fw-bold">
+      <a class="nav-link" href="/user-guide">User Guide</a>
+    </li>
+  </ul>
+
+  <!-- Tambahan: Username + Logout -->
+  <ul class="navbar-nav ms-4" id="login" style="display: none">
+    <li class="nav-item dropdown">
+      <a
+        class="nav-link dropdown-toggle fw-bold"
+        href="#"
+        id="userDropdown"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <span id="username">Loading...</span>
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="userDropdown">
+        <li>
+          <a class="dropdown-item text-danger" href="#" id="logoutBtn">
+            Logout
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetch("http://localhost:3000/api/profile", { credentials: "include" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.user) {
+          document.getElementById("login").style.display = "block";
+          document.getElementById("username").innerText = data.user.username;
+          if (data.user.role === "admin") {
+            document.getElementById("data-user").style.display = "block";
+            document.getElementById("history-report").style.display = "block";
+          }
+        } else {
+          window.location.href = "/login";
+        }
+      })
+      .catch((error) => {
+        document.getElementById("login").style.display = "none";
+        console.error("Error fetching user info:", error);
+      });
+
+    document
+      .getElementById("logoutBtn")
+      .addEventListener("click", function (event) {
+        event.preventDefault();
+
+        fetch("http://localhost:3000/api/logout", {
+          method: "POST",
+          credentials: "include",
+        })
+          .then(() => {
+            Swal.fire({
+              icon: "success",
+              title: "Logout Berhasil!",
+              text: "Anda akan dialihkan ke halaman login.",
+              timer: 1500,
+              showConfirmButton: false,
+            }).then(() => {
+              window.location.href = "/login";
+            });
+          })
+          .catch((error) => console.error("Error during logout:", error));
+      });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll(".nav-link");
+    navLinks.forEach((link) => {
+      if (link.getAttribute("href") === currentPath) {
+        link.classList.add("active-link");
+      } else {
+        link.classList.remove("active-link");
+      }
+    });
+  });
+</script>

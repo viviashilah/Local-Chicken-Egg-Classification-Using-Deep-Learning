@@ -1,0 +1,11 @@
+flask
+flask-cors
+python-dotenv
+werkzeug
+flask-jwt-extended
+opencv-python
+tensorflow==2.14.0
+pandas
+rembg
+scikit-image
+matplotlib
